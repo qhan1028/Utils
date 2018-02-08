@@ -11,12 +11,15 @@ import cv2
 def plotResult(bars, row, col, figsize=(8, 6)):
     plt.clf()
     f, axs = plt.subplots(row, col, figsize=figsize)
-    i = 0
-    if axs
-    for r in range(row):
-        for c in range(col):
-            axs[r, c].bar(range(len(bars[i])), bars[i])
-            i += 1
+    if len(bars) > 1:
+        i = 0
+        for r in range(row):
+            for c in range(col):
+                axs[r, c].bar(range(len(bars[i])), bars[i])
+                i += 1
+    else:
+        axs.bar(range(len(bars[0])), bars[0])
+
     plt.show()
     
 
@@ -34,7 +37,7 @@ def HE(im, plot=False):
 
     if plot:
         ori_hist, _ = np.histogram(y, bins=range(256 + 1), normed=True)
-        res_hist, _ = np.histogram(y_he, bins=range(256 + 1, normed=True)
+        res_hist, _ = np.histogram(y_he, bins=range(256 + 1), normed=True)
         ori_cdf = np.cumsum(ori_hist)
         res_cdf = np.cumsum(res_hist)
         plotResult([ori_hist, res_hist, ori_cdf, res_cdf], 2, 2)
