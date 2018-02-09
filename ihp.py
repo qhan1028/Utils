@@ -8,6 +8,27 @@ import matplotlib.pyplot as plt
 import cv2
 
 
+def replaceY(y, im_yuv):
+    im_yuv[:, :, 0] = y
+    return cv2.cvtColor(im_yuv, cv2.COLOR_YUV2RGB)
+
+
+def preprocess(im):
+    isRGB = len(im.shape) == 3
+    if isRGB:
+        im_yuv = cv2.cvtColor(im, cv2.COLOR_RGB2YUV)
+        return np.array(im_yuv[:, :, 0]), im_yuv
+    else:
+        return im, None
+
+
+def postprocess(y, im_yuv):
+    if im_yuv is None:
+        return y
+    else:
+        return replaceY(y, ori_yuv)
+
+
 def plotResult(bars, row, col, figsize=(8, 6)):
     plt.clf()
     f, axs = plt.subplots(row, col, figsize=figsize)
@@ -25,13 +46,7 @@ def plotResult(bars, row, col, figsize=(8, 6)):
 
 ## Histogram Equalization
 def HE(im, plot=False):
-    isRGB = len(im.shape) == 3
-    
-    if isRGB:
-        im_yuv = cv2.cvtColor(im, cv2.COLOR_RGB2YUV)
-        y = np.array(im_yuv[:, :, 0])
-    else:
-        y = im
+    y, im_yuv = preprocess(im)
 
     y_he = cv2.equalizeHist(y)
 
@@ -42,34 +57,17 @@ def HE(im, plot=False):
         res_cdf = np.cumsum(res_hist)
         plotResult([ori_hist, res_hist, ori_cdf, res_cdf], 2, 2)
 
-    if c == 3:
-        return replaceY(y_he, im_yuv)
-    else:
-        return y_he
+    return postprocess(y_he, im_yuv)
 
 
 ## Histogram Specification
 def HS(original_im, target_im, plot=False):
-    ori_isRGB = len(original_im.shape) == 3
-    tar_isRGB = len(target_im.shape) == 3
+    ori_y, ori_yuv = preprocess(original_im)
+    tar_y, tar_yuv = preprocess(target_im)
     
-    if ori_isRGB:
-        ori_yuv = cv2.cvtColor(original_im, cv2.COLOR_RGB2YUV)
-        ori_y = np.array(ori_yuv[:, :, 0])
-    else:
-        ori_y = original_im
-    
-    if tar_isRGB:
-        tar_yuv = cv2.cvtColor(target_im, cv2.COLOR_RGB2YUV)
-        tar_y = np.array(tar_yuv[:, :, 0])
-    else:
-        tar_y = target_im
-    
-    # get histogram
+    # get histogram, cdf
     ori_hist, index = np.histogram(ori_y, bins=range(256 + 1), normed=True)
     tar_hist, index = np.histogram(tar_y, bins=range(256 + 1), normed=True)
-    
-    # get cdf
     ori_cdf = np.cumsum(ori_hist)
     tar_cdf = np.cumsum(tar_hist)
     
@@ -95,7 +93,15 @@ def HS(original_im, target_im, plot=False):
         res_cdf = np.cumsum(res_hist)
         plotResult([ori_hist, tar_hist, res_hist, ori_cdf, tar_cdf, res_cdf], 2, 3)
     
-    if ori_isRGB:
-        return replaceY(res_y, ori_yuv)
-    else:
-        return res_y
+    return postprocess(res_y, ori_yuv)
+
+
+## Mean Matching
+def MM(original_im, target_im):
+    ori_y, ori_yuv = preprocess(original_im)
+    tar_y, tar_yuv = preprocess(target_im)
+
+    diff = int(round(np.mean(tar_y) - np.mean(ori_y)))
+    res_y = np.clip(ori_y.astype(np.int) + diff, 0, 255).astype(np.uint8)
+
+    return postprocess(res_y, ori_yuv)
