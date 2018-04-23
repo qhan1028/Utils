@@ -26,18 +26,3 @@ colorscheme default
 set foldmethod=indent
 set foldlevel=0
 set foldnestmax=2
-
-" use alt to switch tab
-:map <¡> 1gt
-:map <™> 2gt
-:map <£> 3gt
-:map <¢> 4gt
-:map <∞> 5gt
-:map <§> 6gt
-:map <¶> 7gt
-:map <•> 8gt
-:map <ª> 9gt
-:map <º> :tablast<CR>
-:map <≥> gt
-:map <≤> gT
-:map <˜> :Tex<CR>
