@@ -1,2 +1,2 @@
 # Utilities
-some useful tools.
+some useful tools and configs.
