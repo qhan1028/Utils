@@ -1,0 +1,11 @@
+{
+  "Editor": {
+    "codemirror_options": {
+      "vimMode": false,
+      "keyMap": "sublime"
+    },
+    "file_extension_modes": {
+      ".md": "Markdown"
+    }
+  }
+}

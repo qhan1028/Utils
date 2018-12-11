@@ -1,0 +1,64 @@
+{
+  "keys": {
+    "command": {
+      "unbind": [
+        "d,d",
+        "p",
+        "v",
+        "shift-v",
+        "c",
+        "y",
+        "i,i",
+        "0,0",
+        "shift-k",
+        "shift-j",
+        "j",
+        "k",
+        "shift-m",
+        "s",
+        "shift-l"
+      ],
+      "bind": {
+        "d": "jupyter-notebook:delete-cell",
+        "cmd-enter": "jupyter-notebook:run-all-cells",
+        "shift-cmd-enter": "jupyter-notebook:restart-kernel-and-run-all-cells",
+        "p": "jupyter-notebook:paste-cell-below",
+        "shift-p": "jupyter-notebook:paste-cell-above",
+        "c": "jupyter-notebook:change-cell-to-code",
+        "y": "jupyter-notebook:copy-cell",
+        "ctrl-down": "jupyter-notebook:move-cell-down",
+        "ctrl-up": "jupyter-notebook:move-cell-up",
+        "ctrl-c": "jupyter-notebook:interrupt-kernel",
+        "ctrl-q": "jupyter-notebook:shutdown-kernel",
+        "s": "jupyter-notebook:split-cell-at-cursor",
+        "shift-a": "jupyter-notebook:merge-cell-with-previous-cell",
+        "shift-b": "jupyter-notebook:merge-cell-with-next-cell",
+        "ctrl-o": "jupyter-notebook:clear-all-cells-output",
+        "cmd-r": "jupyter-notebook:rename-notebook",
+        "ctrl-r": "jupyter-notebook:restart-kernel",
+        "ctrl-r-o": "jupyter-notebook:restart-kernel-and-clear-output",
+        "cmd-f": "jupyter-notebook:find-and-replace",
+        "alt-m": "jupyter-notebook:toggle-menubar",
+        "alt-t": "jupyter-notebook:toggle-toolbar",
+        "alt-h": "jupyter-notebook:toggle-header",
+        "alt-l": "jupyter-notebook:toggle-all-line-numbers",
+        "shift-m": "jupyter-notebook:merge-selected-cells",
+        "shift-s": "jupyter-notebook:split-cell-at-cursor",
+        "ctrl-d": "jupyter-notebook:clear-cell-output",
+        "alt-o": "jupyter-notebook:toggle-all-cells-output-collapsed",
+        "shift-alt-o": "jupyter-notebook:toggle-all-cells-output-scrolled",
+        "ctrl-e": "jupyter-notebook:restart-kernel-and-run-all-cells",
+        "u": "jupyter-notebook:undo-cell-deletion"
+      }
+    }
+  },
+  "Cell": {
+    "cm_config": {
+      "lineNumbers": true
+    }
+  },
+  "Notebook": {
+    "Header": true,
+    "Toolbar": true
+  }
+}
