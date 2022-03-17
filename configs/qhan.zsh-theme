@@ -9,11 +9,13 @@
 # Reference: https://apple.stackexchange.com/questions/135742/time-in-milliseconds-since-epoch-in-the-terminal
 #
 if [[ "$OSTYPE" == "darwin"* ]]; then
+    local c1="$fg_bold[yellow]"
+    local c2="$fg_bold[red]"
+    local color_reset="$reset_color";
+    echo "\nHello ${c1}${USER}${color_reset}, ${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${color_reset}"
+
     {
-      local c1="$fg_bold[yellow]"
-      local c2="$fg_bold[red]"
-      local color_reset="$reset_color";
-      echo "\nHello ${c1}${USER}${color_reset}, ${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${color_reset}"
+        gdate > /dev/null
     } || {
         echo "\n$fg_bold[yellow]passsion.zsh-theme depends on cmd [gdate] to get current time in milliseconds$reset_color"
         echo "$fg_bold[yellow][gdate] is not installed by default in macOS$reset_color"
