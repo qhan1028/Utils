@@ -65,15 +65,6 @@ export LSCOLORS="gxfxcxdxcxegedabagacad"
 
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64/
 
-# Load pyenv automatically
-export PATH="$HOME/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-# Path for SDK
-export SDKROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk
-export MACOSX_DEPLOYMENT_TARGET=10.14
-
 # Kubernetes auto completion
 source <(kubectl completion bash)
 if [ -f $(brew --prefix)/etc/bash_completion ]; then
