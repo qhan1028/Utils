@@ -104,6 +104,8 @@ function update_virtualenv_status() {
         local color="%{$fg_no_bold[magenta]%}";
         local color_reset="%{$reset_color%}";
         VIRTUAL_ENV_STATUS="[${color}$(basename ${VIRTUAL_ENV})${color_reset}] "
+    else
+        VIRTUAL_ENV_STATUS=
     fi
 }
 
