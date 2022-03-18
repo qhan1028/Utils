@@ -20,25 +20,28 @@ case ${1} in
     CONFIG_NAME=.zshrc
     echo Copy: $(cp -v ${REPO_CONFIG_DIR}/${CONFIG_NAME} ${HOME_DIR}/${CONFIG_NAME});
 
+    PROFILE_NAME=.zprofile
+    echo Copy: $(cp -v ${REPO_CONFIG_DIR}/${PROFILE_NAME} ${HOME_DIR}/${PROFILE_NAME});
+
     THEME_NAME=qhan.zsh-theme
     LOCAL_THEME_PATH=${HOME_DIR}/.oh-my-zsh/custom/themes/${THEME_NAME}
     echo Copy: $(cp -v ${REPO_CONFIG_DIR}/${THEME_NAME} ${LOCAL_THEME_PATH});
     ;;
 
   bash)
-    CONFIG_NAME=".bashrc"
+    CONFIG_NAME=.bashrc
 
     echo Copy: $(cp -v ${REPO_CONFIG_DIR}/${CONFIG_NAME} ${HOME_DIR}/${CONFIG_NAME});
     ;;
 
   vim)
-    CONFIG_NAME=".vimrc"
+    CONFIG_NAME=.vimrc
 
     echo Copy: $(cp -v ${REPO_CONFIG_DIR}/${CONFIG_NAME} ${HOME_DIR}/${CONFIG_NAME});
     ;;
 
   jupyter)
-    CONFIG_NAME=".jupyter"
+    CONFIG_NAME=.jupyter
 
     echo Copy:
     cp -rv ${REPO_CONFIG_DIR}/${CONFIG_NAME} ${HOME_DIR}/
@@ -51,4 +54,4 @@ case ${1} in
 
 esac
 
-echo "$(tput setaf 2)Done$(tput sgr0)"
+echo "$(tput setaf 2)Done.$(tput sgr0)"
