@@ -9,10 +9,12 @@
 # Reference: https://apple.stackexchange.com/questions/135742/time-in-milliseconds-since-epoch-in-the-terminal
 #
 if [[ "$OSTYPE" == "darwin"* ]]; then
+    local c0="$reset_color";
     local c1="$fg_bold[yellow]"
     local c2="$fg_bold[red]"
-    local color_reset="$reset_color";
-    echo "\nHello ${c1}${USER}${color_reset}, ${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${color_reset}"
+    local c3="$fg_bold[green]"
+    local HOSTNAME=$(hostname -s)
+    echo "\nHello ${c1}${USER}${c0}@${c3}${HOSTNAME}${c0}, ${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${c0}"
 
     {
         gdate > /dev/null
@@ -30,11 +32,12 @@ fi
 # Time
 #
 function real_time() {
-    local color="%{$fg_no_bold[red]%}";                    # color in PROMPT need format in %{XXX%} which is not same with echo
-    local date="$(date +%Y.%m.%d)";
+    # local date="$(date +%Y.%m.%d)";
+    local date="$(date +%m.%d)";
     local time="$(date +%H:%M:%S)";
-    local color_reset="%{$reset_color%}";
-    echo "${color}${date}${color_reset}-${color}${time}${color_reset}";
+    local c0="%{$reset_color%}";
+    local c1="%{$fg_bold[red]%}";                    # color in PROMPT need format in %{XXX%} which is not same with echo
+    echo "${c1}${date}${c0}-${c1}${time}${c0}";
 }
 
 
@@ -58,12 +61,14 @@ function login_info() {
     elif [[ "$OSTYPE" == "freebsd"* ]]; then
         # ...
     else
-        # Unknown.
+        # Unknown
+        ip=$(hostname -s)
     fi
-    local yellow="%{$fg_no_bold[yellow]%}";        # color in PROMPT need format in %{XXX%} which is not same with echo
-    local green="%{$fg_no_bold[green]%}";            # color in PROMPT need format in %{XXX%} which is not same with echo
-    local color_reset="%{$reset_color%}";
-    echo "${yellow}%n${color_reset}@${green}%m${color_reset}";
+    
+    local c0="%{$reset_color%}";
+    local c1="%{$fg_bold[yellow]%}";        # color in PROMPT need format in %{XXX%} which is not same with echo
+    local c2="%{$fg_bold[green]%}";            # color in PROMPT need format in %{XXX%} which is not same with echo
+    echo "${c1}%n${c0}@${c2}${ip}${c0}";
 }
 
 
@@ -71,18 +76,18 @@ function login_info() {
 # Directory
 #
 function directory() {
-    local color="%{$fg_bold[cyan]%}";
     # REF: https://stackoverflow.com/questions/25944006/bash-current-working-directory-with-replacing-path-to-home-folder
     local directory="${PWD/#$HOME/~}";
-    local color_reset="%{$reset_color%}";
-    echo "${color}${directory}${color_reset}";
+    local c0="%{$reset_color%}";
+    local c1="%{$fg_bold[cyan]%}";
+    echo "${c1}${directory}${c0}";
 }
 
 
 #
 # Git status
 #
-ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_no_bold[magenta]%}";
+ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[magenta]%}";
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}] ";
 ZSH_THEME_GIT_PROMPT_DIRTY="🔥%{$reset_color%}";
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}";
@@ -101,11 +106,11 @@ function git_status() {
 #
 function update_virtualenv_status() {
     if [ ${VIRTUAL_ENV} ]; then
-        local color="%{$fg_no_bold[magenta]%}";
-        local color_reset="%{$reset_color%}";
-        VIRTUAL_ENV_STATUS="[${color}$(basename ${VIRTUAL_ENV})${color_reset}] "
+        local c0="%{$reset_color%}";
+        local c1="%{$fg_bold[magenta]%}";
+        VIRTUAL_ENV_STATUS="[${c1}$(basename ${VIRTUAL_ENV})${c0}] "
     else
-        VIRTUAL_ENV_STATUS=
+        VIRTUAL_ENV_STATUS=""
     fi
 }
 
@@ -121,8 +126,8 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 #
 function update_command_status() {
     local arrow="";
-    local color_reset="%{$reset_color%}";
-    local reset_font="%{$fg_no_bold[white]%}";
+    local c0="%{$reset_color%}";
+    local f0="%{$fg_no_bold[white]%}";
     COMMAND_RESULT=$1;
     export COMMAND_RESULT=$COMMAND_RESULT
     if $COMMAND_RESULT;
@@ -131,7 +136,7 @@ function update_command_status() {
     else
         arrow="%{$fg_bold[red]%}❱";
     fi
-    COMMAND_STATUS="${arrow}${reset_font}${color_reset}";
+    COMMAND_STATUS="${arrow}${f0}${c0}";
 }
 update_command_status true;
 
@@ -158,13 +163,13 @@ output_command_execute_after() {
     else
         color_cmd="$fg_bold[red]";
     fi
-    local color_reset="$reset_color";
-    cmd="${color_cmd}${cmd}${color_reset}"
+    local c0="$reset_color";
+    cmd="${color_cmd}${cmd}${c0}"
 
     # time
     local time="[$(date +%H:%M:%S)]"
     local color_time="$fg_no_bold[cyan]";
-    time="${color_time}${time}${color_reset}";
+    time="${color_time}${time}${c0}";
 
     # cost
     local time_end="$(current_time_millis)";
@@ -177,7 +182,7 @@ output_command_execute_after() {
     fi
     cost="[cost ${cost}s]"
     local color_cost="$fg_no_bold[cyan]";
-    cost="${color_cost}${cost}${color_reset}";
+    cost="${color_cost}${cost}${c0}";
 
     echo -e "${time} ${cost} ${cmd}";
     echo -e "";
