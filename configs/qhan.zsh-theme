@@ -3,6 +3,15 @@
 # Referenced from passion theme: https://github.com/ChesterYue/ohmyzsh-theme-passion
 #
 
+DATE_COLOR=red;
+USER_COLOR=yellow;
+HOST_COLOR=green;
+PATH_COLOR=cyan;
+
+GIT_COLOR=magenta;
+PYENV_COLOR=magenta;
+CMD_COLOR=white;
+
 
 #
 # gdate for macOS
@@ -10,11 +19,11 @@
 #
 if [[ "$OSTYPE" == "darwin"* ]]; then
     local c0="$reset_color";
-    local c1="$fg_bold[yellow]"
-    local c2="$fg_bold[red]"
-    local c3="$fg_bold[green]"
+    local c1="$fg_bold[${USER_COLOR}]"
+    local c2="$fg_bold[${DATE_COLOR}]"
+    local c3="$fg_bold[${HOST_COLOR}]"
     local HOSTNAME=$(hostname -s)
-    echo "\nHello ${c1}${USER}${c0}@${c3}${HOSTNAME}${c0}, ${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${c0}"
+    echo "${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${c0}, Hello ${c1}${USER}${c0}@${c3}${HOSTNAME}${c0}"
 
     {
         gdate > /dev/null
@@ -36,7 +45,7 @@ function real_time() {
     local date="$(date +%m.%d)";
     local time="$(date +%H:%M:%S)";
     local c0="%{$reset_color%}";
-    local c1="%{$fg_bold[red]%}";                    # color in PROMPT need format in %{XXX%} which is not same with echo
+    local c1="%{$fg_bold[${DATE_COLOR}]%}";                    # color in PROMPT need format in %{XXX%} which is not same with echo
     echo "${c1}${date}${c0}-${c1}${time}${c0}";
 }
 
@@ -62,12 +71,13 @@ function login_info() {
         # ...
     else
         # Unknown
-        ip=$(hostname -s)
     fi
+
+    if [ -z $ip ]; then ip=💻; fi
     
     local c0="%{$reset_color%}";
-    local c1="%{$fg_bold[yellow]%}";        # color in PROMPT need format in %{XXX%} which is not same with echo
-    local c2="%{$fg_bold[green]%}";            # color in PROMPT need format in %{XXX%} which is not same with echo
+    local c1="%{$fg_bold[${USER_COLOR}]%}";        # color in PROMPT need format in %{XXX%} which is not same with echo
+    local c2="%{$fg_bold[${HOST_COLOR}]%}";            # color in PROMPT need format in %{XXX%} which is not same with echo
     echo "${c1}%n${c0}@${c2}${ip}${c0}";
 }
 
@@ -79,7 +89,7 @@ function directory() {
     # REF: https://stackoverflow.com/questions/25944006/bash-current-working-directory-with-replacing-path-to-home-folder
     local directory="${PWD/#$HOME/~}";
     local c0="%{$reset_color%}";
-    local c1="%{$fg_bold[cyan]%}";
+    local c1="%{$fg_bold[${PATH_COLOR}]%}";
     echo "${c1}${directory}${c0}";
 }
 
@@ -87,7 +97,7 @@ function directory() {
 #
 # Git status
 #
-ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[magenta]%}";
+ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[${GIT_COLOR}]%}";
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}] ";
 ZSH_THEME_GIT_PROMPT_DIRTY="🔥%{$reset_color%}";
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}";
@@ -107,7 +117,7 @@ function git_status() {
 function update_virtualenv_status() {
     if [ ${VIRTUAL_ENV} ]; then
         local c0="%{$reset_color%}";
-        local c1="%{$fg_bold[magenta]%}";
+        local c1="%{$fg_bold[${PYENV_COLOR}]%}";
         VIRTUAL_ENV_STATUS="[${c1}$(basename ${VIRTUAL_ENV})${c0}] "
     else
         VIRTUAL_ENV_STATUS=""
@@ -127,7 +137,7 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 function update_command_status() {
     local arrow="";
     local c0="%{$reset_color%}";
-    local f0="%{$fg_no_bold[white]%}";
+    local f0="%{$fg_no_bold[${CMD_COLOR}]%}";
     COMMAND_RESULT=$1;
     export COMMAND_RESULT=$COMMAND_RESULT
     if $COMMAND_RESULT;
@@ -292,5 +302,5 @@ ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(cd|git) *";
 #
 # LS colors
 #
-export CLICOLOR='true'
-export LSCOLORS="gxfxcxdxcxegedabagacad"
+CLICOLOR='true'
+LSCOLORS="gxfxcxdxcxegedabagacad"
