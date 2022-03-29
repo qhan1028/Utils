@@ -287,3 +287,10 @@ ZSH_AUTOSUGGEST_STRATEGY=(history completion);
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20;
 ZSH_AUTOSUGGEST_HISTORY_IGNORE="(cd|git) *";
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(cd|git) *";
+
+
+#
+# LS colors
+#
+export CLICOLOR='true'
+export LSCOLORS="gxfxcxdxcxegedabagacad"
