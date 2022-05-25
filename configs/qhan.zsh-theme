@@ -263,6 +263,7 @@ precmd() {
 
 # set option
 setopt PROMPT_SUBST;
+setopt no_share_history;
 
 
 #
