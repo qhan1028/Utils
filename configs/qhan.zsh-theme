@@ -98,7 +98,7 @@ function directory() {
 # Git status
 #
 ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[${GIT_COLOR}]%}";
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}] ";
+ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]";
 ZSH_THEME_GIT_PROMPT_DIRTY="🔥%{$reset_color%}";
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}";
 
@@ -107,7 +107,7 @@ function update_git_status() {
 }
 
 function git_status() {
-    echo "${GIT_STATUS}";
+    echo " ${GIT_STATUS}";
 }
 
 
@@ -118,17 +118,18 @@ function update_virtualenv_status() {
     if [ ${VIRTUAL_ENV} ]; then
         local c0="%{$reset_color%}";
         local c1="%{$fg_bold[${PYENV_COLOR}]%}";
-        VIRTUAL_ENV_STATUS="[${c1}$(basename ${VIRTUAL_ENV})${c0}] "
+        VIRTUAL_ENV_STATUS="[${c1}$(basename ${VIRTUAL_ENV})${c0}]"
     else
         VIRTUAL_ENV_STATUS=""
     fi
 }
 
 function virtualenv_status() { 
-    echo "${VIRTUAL_ENV_STATUS}"
+    echo " ${VIRTUAL_ENV_STATUS}"
 }
 
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 
 #
@@ -288,7 +289,7 @@ TRAPALRM() {
 #
 NEWLINE=$'\n';
 
-PROMPT='[$(real_time) $(login_info) $(directory)] $(git_status)$(virtualenv_status)$NEWLINE$(command_status) ';
+PROMPT='[$(real_time) $(login_info) $(directory)]$(git_status)$(virtualenv_status)$NEWLINE$(command_status) ';
 
 
 #
