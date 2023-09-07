@@ -36,6 +36,18 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     }
 fi
 
+#
+# Join strings
+#
+
+# https://stackoverflow.com/a/17841619/5466140
+function join_by {
+  local delimiter=${1-} vars=${2-}
+  if shift 2; then
+    printf %s "$vars" "${@/#/$delimiter}"
+  fi
+}
+
 
 #
 # Time
@@ -96,17 +108,25 @@ function directory() {
 #
 # Versions
 #
+
 function update_versions() {
-    local c0="%{$reset_color%}";
+  local c0="%{$reset_color%}"
+  declare -a version_texts=()
 
-    # %B start/stop bold mode
-    # %F choose foreground color
-    if which nvm > /dev/null; then NVM_VERSION="nvm:%F{10}$(nvm -v)%F"; fi
-    if which node > /dev/null; then NODE_VERSION=" node:%F{2}$(node -v)%F"; fi
-    if which npm > /dev/null; then NPM_VERSION=" npm:%F{124}$(npm -v)%F"; fi
-    if which yarn > /dev/null; then YARN_VERSION=" yarn:%F{27}$(yarn -v)%F"; fi
+  for package in nvm,13 node,10 npm,1 yarn,27; do
+    p=${package%,*} # package
+    c=${package#*,} # color
 
-    VERSIONS="[%B${NVM_VERSION}${NODE_VERSION}${NPM_VERSION}${YARN_VERSION}${c0}]"
+    if which $p >/dev/null; then
+      version=$($p -v)
+      version_texts+=("$p:%F{$c}${version}%F")
+    fi
+
+  done
+
+  # %B start/stop bold mode
+  # %F choose foreground color
+  VERSIONS="[%B%F$(join_by " " ${version_texts[@]})${c0}]"
 }
 
 function versions() {
@@ -116,10 +136,10 @@ function versions() {
 #
 # Git status
 #
-ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg_bold[${GIT_COLOR}]%}";
+ZSH_THEME_GIT_PROMPT_PREFIX="[%B%Fgit:%F{$GIT_COLOR}";
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]";
-ZSH_THEME_GIT_PROMPT_DIRTY="🔥%{$reset_color%}";
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$reset_color%}";
+ZSH_THEME_GIT_PROMPT_DIRTY="🔥";
+ZSH_THEME_GIT_PROMPT_CLEAN="";
 
 function update_git_status() {
     GIT_STATUS=$(git_prompt_info);
@@ -136,8 +156,7 @@ function git_status() {
 function update_virtualenv_status() {
     if [ ${VIRTUAL_ENV} ]; then
         local c0="%{$reset_color%}";
-        local c1="%{$fg_bold[${PYENV_COLOR}]%}";
-        VIRTUAL_ENV_STATUS="[${c1}$(basename ${VIRTUAL_ENV})${c0}]"
+        VIRTUAL_ENV_STATUS="[%B%F{$PYENV_COLOR}$(basename ${VIRTUAL_ENV})${c0}]"
     else
         VIRTUAL_ENV_STATUS=""
     fi
