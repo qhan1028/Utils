@@ -76,8 +76,8 @@ function login_info() {
     if [ -z $ip ]; then ip=💻; fi
     
     local c0="%{$reset_color%}";
-    local c1="%{$fg_bold[${USER_COLOR}]%}";        # color in PROMPT need format in %{XXX%} which is not same with echo
-    local c2="%{$fg_bold[${HOST_COLOR}]%}";            # color in PROMPT need format in %{XXX%} which is not same with echo
+    local c1="%B%F{${USER_COLOR}}";        # color in PROMPT need format in %{XXX%} which is not same with echo
+    local c2="%B%F{${HOST_COLOR}}";        # color in PROMPT need format in %{XXX%} which is not same with echo
     echo "${c1}%n${c0}@${c2}${ip}${c0}";
 }
 
@@ -93,6 +93,25 @@ function directory() {
     echo "${c1}${directory}${c0}";
 }
 
+#
+# Versions
+#
+function update_versions() {
+    local c0="%{$reset_color%}";
+
+    # %B start/stop bold mode
+    # %F choose foreground color
+    if which nvm > /dev/null; then NVM_VERSION="nvm:%F{10}$(nvm -v)%F"; fi
+    if which node > /dev/null; then NODE_VERSION=" node:%F{2}$(node -v)%F"; fi
+    if which npm > /dev/null; then NPM_VERSION=" npm:%F{124}$(npm -v)%F"; fi
+    if which yarn > /dev/null; then YARN_VERSION=" yarn:%F{27}$(yarn -v)%F"; fi
+
+    VERSIONS="[%B${NVM_VERSION}${NODE_VERSION}${NPM_VERSION}${YARN_VERSION}${c0}]"
+}
+
+function versions() {
+    echo " ${VERSIONS}"
+}
 
 #
 # Git status
@@ -160,7 +179,7 @@ function command_status() {
 # Output command execute after
 #
 output_command_execute_after() {
-    if [ "$COMMAND_TIME_BEIGIN" = "-20200325" ] || [ "$COMMAND_TIME_BEIGIN" = "" ];
+    if [ "$COMMAND_TIME_BEGIN" = "-20200325" ] || [ "$COMMAND_TIME_BEGIN" = "" ];
     then
         return 1;
     fi
@@ -184,8 +203,8 @@ output_command_execute_after() {
 
     # cost
     local time_end="$(current_time_millis)";
-    local cost=$(bc -l <<<"${time_end}-${COMMAND_TIME_BEIGIN}");
-    COMMAND_TIME_BEIGIN="-20200325"
+    local cost=$(bc -l <<<"${time_end}-${COMMAND_TIME_BEGIN}");
+    COMMAND_TIME_BEGIN="-20200325"
     local length_cost=${#cost};
     if [ "$length_cost" = "4" ];
     then
@@ -205,7 +224,10 @@ output_command_execute_after() {
 # Reference: http://zsh.sourceforge.net/Doc/Release/Functions.html
 # 
 preexec() {
-    COMMAND_TIME_BEIGIN="$(current_time_millis)";
+    COMMAND_TIME_BEGIN="$(current_time_millis)";
+
+    # update_virtualenv_status
+    update_virtualenv_status;
 }
 
 current_time_millis() {
@@ -245,6 +267,8 @@ precmd() {
     else
         last_cmd_result=false;
     fi
+
+    update_versions;
 
     # update_git_status
     update_git_status;
@@ -289,7 +313,7 @@ TRAPALRM() {
 #
 NEWLINE=$'\n';
 
-PROMPT='[$(real_time) $(login_info) $(directory)]$(git_status)$(virtualenv_status)$NEWLINE$(command_status) ';
+PROMPT='[$(real_time) $(login_info) $(directory)]$(versions)$(git_status)$(virtualenv_status)$NEWLINE$(command_status) ';
 
 
 #
