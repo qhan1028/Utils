@@ -8,39 +8,40 @@ USER_COLOR=yellow;
 HOST_COLOR=green;
 PATH_COLOR=cyan;
 
+CMD_COLOR=white;
 GIT_COLOR=magenta;
 PYENV_COLOR=magenta;
-CMD_COLOR=white;
 
 
 #
 # gdate for macOS
 # Reference: https://apple.stackexchange.com/questions/135742/time-in-milliseconds-since-epoch-in-the-terminal
 #
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     local c0="$reset_color";
     local c1="$fg_bold[${USER_COLOR}]"
     local c2="$fg_bold[${DATE_COLOR}]"
     local c3="$fg_bold[${HOST_COLOR}]"
     local HOSTNAME=$(hostname -s)
-    echo "${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${c0}, Hello ${c1}${USER}${c0}@${c3}${HOSTNAME}${c0}"
+    echo "\n${c2}$(gdate +%Y.%m.%d) $(gdate +%H:%M:%S)${c0}, Hello ${c1}${USER}${c0}@${c3}${HOSTNAME}${c0}"
 
     {
         gdate > /dev/null
     } || {
-        echo "\n$fg_bold[yellow]passsion.zsh-theme depends on cmd [gdate] to get current time in milliseconds$reset_color"
+        echo "\n$fg_bold[yellow]qhan.zsh-theme depends on cmd [gdate] to get current time in milliseconds$reset_color"
         echo "$fg_bold[yellow][gdate] is not installed by default in macOS$reset_color"
         echo "$fg_bold[yellow]to get [gdate] by running:$reset_color"
-        echo "$fg_bold[green]brew install coreutils;$reset_color";
-        echo "$fg_bold[yellow]\nREF: https://github.com/ChesterYue/ohmyzsh-theme-passion#macos\n$reset_color"
+        echo "$fg_bold[green]brew install coreutils;$reset_color"
+        echo "$fg_bold[yellow]\nReference: https://github.com/ChesterYue/ohmyzsh-theme-passion#macos\n$reset_color"
     }
 fi
 
 #
 # Join strings
+# Reference: https://stackoverflow.com/a/17841619/5466140
 #
 
-# https://stackoverflow.com/a/17841619/5466140
 function join_by {
   local delimiter=${1-} vars=${2-}
   if shift 2; then
@@ -50,8 +51,9 @@ function join_by {
 
 
 #
-# Time
+# Current time
 #
+
 function real_time() {
     # local date="$(date +%Y.%m.%d)";
     local date="$(date +%m.%d)";
@@ -65,6 +67,7 @@ function real_time() {
 #
 # Login info
 #
+
 function login_info() {
     local ip
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
@@ -95,10 +98,11 @@ function login_info() {
 
 
 #
-# Directory
+# Current directory
 #
+
 function directory() {
-    # REF: https://stackoverflow.com/questions/25944006/bash-current-working-directory-with-replacing-path-to-home-folder
+    # Reference: https://stackoverflow.com/questions/25944006/bash-current-working-directory-with-replacing-path-to-home-folder
     local directory="${PWD/#$HOME/~}";
     local c0="%{$reset_color%}";
     local c1="%{$fg_bold[${PATH_COLOR}]%}";
@@ -111,6 +115,7 @@ function directory() {
 
 function update_versions() {
   local c0="%{$reset_color%}"
+
   declare -a version_texts=()
 
   for package in nvm,13 node,10 npm,1 yarn,27; do
@@ -119,14 +124,14 @@ function update_versions() {
 
     if which $p >/dev/null; then
       version=$($p -v)
-      version_texts+=("$p:%F{$c}${version}%F")
+      version_texts+=("%F{8}$p:%B%F{$c}${version}${c0}")
     fi
 
   done
 
   # %B start/stop bold mode
   # %F choose foreground color
-  VERSIONS="[%B%F$(join_by " " ${version_texts[@]})${c0}]"
+  VERSIONS="[$(join_by " " ${version_texts[@]})${c0}]"
 }
 
 function versions() {
@@ -136,7 +141,8 @@ function versions() {
 #
 # Git status
 #
-ZSH_THEME_GIT_PROMPT_PREFIX="[%B%Fgit:%F{$GIT_COLOR}";
+
+ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg[grey]%}git:%B%F{$GIT_COLOR}";
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]";
 ZSH_THEME_GIT_PROMPT_DIRTY="🔥";
 ZSH_THEME_GIT_PROMPT_CLEAN="";
@@ -153,6 +159,7 @@ function git_status() {
 #
 # Pyenv status
 #
+
 function update_virtualenv_status() {
     if [ ${VIRTUAL_ENV} ]; then
         local c0="%{$reset_color%}";
@@ -173,6 +180,7 @@ export VIRTUAL_ENV_DISABLE_PROMPT=1
 #
 # Command status
 #
+
 function update_command_status() {
     local arrow="";
     local c0="%{$reset_color%}";
@@ -197,6 +205,7 @@ function command_status() {
 #
 # Output command execute after
 #
+
 output_command_execute_after() {
     if [ "$COMMAND_TIME_BEGIN" = "-20200325" ] || [ "$COMMAND_TIME_BEGIN" = "" ];
     then
@@ -212,7 +221,7 @@ output_command_execute_after() {
     else
         color_cmd="$fg_bold[red]";
     fi
-    local c0="$reset_color";
+    local c0="%{$reset_color%}";
     cmd="${color_cmd}${cmd}${c0}"
 
     # time
@@ -242,6 +251,7 @@ output_command_execute_after() {
 # Command execute before
 # Reference: http://zsh.sourceforge.net/Doc/Release/Functions.html
 # 
+
 preexec() {
     COMMAND_TIME_BEGIN="$(current_time_millis)";
 
@@ -274,8 +284,9 @@ current_time_millis() {
 
 #
 # Command execute after
+# Reference: http://zsh.sourceforge.net/Doc/Release/Functions.html
 #
-# REF: http://zsh.sourceforge.net/Doc/Release/Functions.html
+
 precmd() {
     # last_cmd
     local last_cmd_return_code=$?;
@@ -314,7 +325,12 @@ setopt no_share_history;
 # Timer
 # Reference: https://stackoverflow.com/questions/26526175/zsh-menu-completion-causes-problems-after-zle-reset-prompt
 #
+
 TMOUT=1;
+
+#
+# Trap alarm
+#
 
 TRAPALRM() {
     # $(git_prompt_info) cost too much time which will raise stutters when inputting. so we need to disable it in this occurence.
@@ -330,14 +346,16 @@ TRAPALRM() {
 #
 # Prompt
 #
+
 NEWLINE=$'\n';
 
-PROMPT='[$(real_time) $(login_info) $(directory)]$(versions)$(git_status)$(virtualenv_status)$NEWLINE$(command_status) ';
+PROMPT='[$(real_time) $(login_info) $(directory)]$(versions)$(git_status)$(virtualenv_status)${NEWLINE}$(command_status) ';
 
 
 #
 # Auto suggestion settings
 #
+
 ZSH_AUTOSUGGEST_STRATEGY=(history completion);
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20;
 ZSH_AUTOSUGGEST_HISTORY_IGNORE="(cd|git) *";
@@ -347,5 +365,6 @@ ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(cd|git) *";
 #
 # LS colors
 #
+
 CLICOLOR='true'
 LSCOLORS="gxfxcxdxcxegedabagacad"
