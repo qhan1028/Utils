@@ -117,8 +117,14 @@ function update_versions() {
   local c0="%{$reset_color%}"
 
   declare -a version_texts=()
+  declare -a packages=( \
+    # "nvm,10" \
+    "node,13" \
+    # "npm,1" \
+    # "yarn,27" \
+  )
 
-  for package in nvm,13 node,10 npm,1 yarn,27; do
+  for package in $packages[@]; do
     p=${package%,*} # package
     c=${package#*,} # color
 

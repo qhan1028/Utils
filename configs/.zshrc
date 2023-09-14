@@ -121,3 +121,26 @@ alias p='poetry'
 
 # pyenv
 if command -v pyenv 1>/dev/null 2>&1; then eval "$(pyenv init -)"; fi
+
+# docker
+export PATH="$PATH:/Applications/Docker.app/Contents/Resources/bin/"
+
+# vault login
+vault-login() {
+  export VAULT_ADDR=https://vault.corp.ailabs.tw
+  # export SOPS_VAULT_URIS=$VAULT_ADDR/v1/ailabs/smart-city/transit/keys/tower
+  export SOPS_VAULT_URIS=$VAULT_ADDR/v1/ailabs/smart-city/transit/keys/minio-backup
+  vault login -method=ldap username=qhan
+}
+
+alias vl='vault-login'
+
+# git change log
+change-log() {
+  VERSION1=$1
+  VERSION2=$2
+
+  git log --pretty=format:"%s (%cn)" "$1"..."$2" | grep "#" | tac
+}
+
+alias cl='change-log'
