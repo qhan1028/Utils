@@ -3,6 +3,13 @@
 # Referenced from passion theme: https://github.com/ChesterYue/ohmyzsh-theme-passion
 #
 
+
+##############
+#            #
+#   Colors   #
+#            #
+##############
+
 DATE_COLOR=red;
 USER_COLOR=yellow;
 HOST_COLOR=green;
@@ -13,10 +20,23 @@ GIT_COLOR=magenta;
 PYENV_COLOR=magenta;
 
 
-#
-# gdate for macOS
+###################
+#                 #
+#   Set options   #
+#                 #
+###################
+
+setopt PROMPT_SUBST;
+setopt no_share_history;
+
+
+######################################
+#                                    #
+#   Current time (gdate for macOS)   #
+#                                    #
+######################################
+
 # Reference: https://apple.stackexchange.com/questions/135742/time-in-milliseconds-since-epoch-in-the-terminal
-#
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     local c0="$reset_color";
@@ -50,9 +70,11 @@ function join_by {
 }
 
 
-#
-# Current time
-#
+####################
+#                  #
+#   Current time   #
+#                  # 
+####################
 
 function real_time() {
     # local date="$(date +%Y.%m.%d)";
@@ -64,9 +86,11 @@ function real_time() {
 }
 
 
-#
-# Login info
-#
+##################
+#                #
+#   Login info   #
+#                #
+##################
 
 function login_info() {
     local ip
@@ -97,9 +121,11 @@ function login_info() {
 }
 
 
-#
-# Current directory
-#
+#########################
+#                       #
+#   Current directory   #
+#                       #
+#########################
 
 function directory() {
     # Reference: https://stackoverflow.com/questions/25944006/bash-current-working-directory-with-replacing-path-to-home-folder
@@ -109,9 +135,12 @@ function directory() {
     echo "${c1}${directory}${c0}";
 }
 
-#
-# Versions
-#
+
+################
+#              #
+#   Versions   #
+#              #
+################
 
 function update_versions() {
   local c0="%{$reset_color%}"
@@ -144,11 +173,14 @@ function versions() {
     echo " ${VERSIONS}"
 }
 
-#
-# Git status
-#
 
-ZSH_THEME_GIT_PROMPT_PREFIX="[%{$fg[grey]%}git:%B%F{$GIT_COLOR}";
+##################
+#                #
+#   Git status   #
+#                #
+##################
+
+ZSH_THEME_GIT_PROMPT_PREFIX="[%{%F{8}%}git:%B%F{$GIT_COLOR}";
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]";
 ZSH_THEME_GIT_PROMPT_DIRTY="🔥";
 ZSH_THEME_GIT_PROMPT_CLEAN="";
@@ -162,9 +194,11 @@ function git_status() {
 }
 
 
-#
-# Pyenv status
-#
+####################
+#                  #
+#   Pyenv status   #
+#                  #
+####################
 
 function update_virtualenv_status() {
     if [ ${VIRTUAL_ENV} ]; then
@@ -183,9 +217,11 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 
-#
-# Command status
-#
+######################
+#                    #
+#   Command status   #
+#                    #
+######################
 
 function update_command_status() {
     local arrow="";
@@ -253,10 +289,13 @@ output_command_execute_after() {
 }
 
 
-#
-# Command execute before
+##############################
+#                            #
+#   Command execute before   #
+#                            #
+##############################
+
 # Reference: http://zsh.sourceforge.net/Doc/Release/Functions.html
-# 
 
 preexec() {
     COMMAND_TIME_BEGIN="$(current_time_millis)";
@@ -288,10 +327,13 @@ current_time_millis() {
 }
 
 
-#
-# Command execute after
+#############################
+#                           #
+#   Command execute after   #
+#                           #
+#############################
+
 # Reference: http://zsh.sourceforge.net/Doc/Release/Functions.html
-#
 
 precmd() {
     # last_cmd
@@ -322,21 +364,22 @@ precmd() {
 }
 
 
-# set option
-setopt PROMPT_SUBST;
-setopt no_share_history;
+#############
+#           #
+#   Timer   #
+#           #
+#############
 
-
-#
-# Timer
 # Reference: https://stackoverflow.com/questions/26526175/zsh-menu-completion-causes-problems-after-zle-reset-prompt
-#
 
 TMOUT=1;
 
-#
-# Trap alarm
-#
+
+##################
+#                #
+#   Trap alarm   #
+#                #
+##################
 
 TRAPALRM() {
     # $(git_prompt_info) cost too much time which will raise stutters when inputting. so we need to disable it in this occurence.
@@ -349,18 +392,22 @@ TRAPALRM() {
 }
 
 
-#
-# Prompt
-#
+##############
+#            #
+#   Prompt   #
+#            #
+##############
 
 NEWLINE=$'\n';
 
 PROMPT='[$(real_time) $(login_info) $(directory)]$(versions)$(git_status)$(virtualenv_status)${NEWLINE}$(command_status) ';
 
 
-#
-# Auto suggestion settings
-#
+################################
+#                              #
+#   Auto suggestion settings   #
+#                              #
+################################
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion);
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20;
@@ -368,9 +415,11 @@ ZSH_AUTOSUGGEST_HISTORY_IGNORE="(cd|git) *";
 ZSH_AUTOSUGGEST_COMPLETION_IGNORE="(cd|git) *";
 
 
-#
-# LS colors
-#
+#################
+#               #
+#   LS colors   #
+#               #
+#################
 
 CLICOLOR='true'
 LSCOLORS="gxfxcxdxcxegedabagacad"
